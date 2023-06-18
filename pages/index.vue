@@ -4,10 +4,7 @@ import DmgCalc from '~/components/dmg-calc'
 
 <template>
   <div class="root">
-    <div class="calcs-container">
-      <DmgCalc/>
-      <!-- <DmgCalc/> -->
-    </div>
+    <DmgCalc/>
   </div>
 </template>
 
@@ -19,12 +16,5 @@ import DmgCalc from '~/components/dmg-calc'
         padding: 10px;
         color: #bdc1c6;
         overflow: hidden;
-    }
-
-    .calcs-container {
-      height: 100%;
-      overflow: auto;
-      display: flex;
-      gap: 50px;
     }
 </style>

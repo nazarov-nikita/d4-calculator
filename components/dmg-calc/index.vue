@@ -1,53 +1,92 @@
-<script setup>
-import { BucketName } from '../../helpers/bucket'
-import DmgCalcBucket from './bucket.vue'
-import { useDmgCalculator } from './useDmgCalculator'
+<script setup lang="ts">
+import StatPanel from './stat-panel.vue'
 
-const {
-  stats,
-  setStatsByKey,
-  result,
-} = useDmgCalculator()
+import { name } from '~/package.json'
+import { jsonParse } from '~/helpers';
+import {StatsType, useDmgCalculator} from './use-dmg-calculator'
+
+const LS_KEY_STATS = `${name}::stats`
+const LS_KEY_STATS_COMPARE = `${name}::stats-compare`
+
+const calculators = [
+  useDmgCalculator(LS_KEY_STATS),
+  useDmgCalculator(LS_KEY_STATS_COMPARE),
+]
+
+const diff = computed(() => {
+  const value1 = +calculators[0].result.value
+  const value2 = +calculators[1].result.value
+  const result = ((value2 - value1) / (value1 / 100)).toFixed(2)
+  if (result.startsWith('-')) {
+    return result
+  }
+
+  if (result === '0.00') {
+    return result
+  }
+
+  return `+${result}`
+})
+
+const diffColor = computed(() => {
+  if (diff.value.startsWith('+')) {
+    return 'green'
+  }
+
+  if (diff.value.startsWith('-')) {
+    return 'red'
+  }
+
+  return 'inherit'
+})
+
+const whenClickMoveStatsButton = () => {
+  calculators[1].setStats(calculators[0].stats.value)
+}
 
 defineExpose({
-  BucketName,
-  DmgCalcBucket,
-  stats,
-  setStatsByKey,
-  result
+  calculators,
+  diff,
+  diffColor,
 })
+
 </script>
 
 <template>
-  <div class="form">
-    <div class="list">
-      <DmgCalcBucket
-        v-for="(bucketName, idx) in BucketName"
-        :key="idx"
-        :bucket-name="bucketName"
-        :stats="stats"
-        :set-stats-by-key="setStatsByKey"
+  <div class="panels-container">
+    <StatPanel
+      :calculator="calculators[0]"
+    />
+    <v-btn
+      variant="outlined"
+      class="move-button"
+      :onclick="whenClickMoveStatsButton"
+    >
+      <v-icon
+        title="Move stats from left side"
+        icon="mdi-arrow-right"
       />
-    </div>
-    <div class="result">=&nbsp;{{ result }}</div>
+    </v-btn>
+    <StatPanel
+      :calculator="calculators[1]"
+    />
+    <div class="diff-container">Diff: <span :style="`color: ${diffColor};`">{{ diff }}</span> % </div>
   </div>
 </template>
 
 <style>
-.form {
-  display: flex;
-  gap: 20px;
-}
-
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
+.panels-container {
+  height: 100%;
   overflow: auto;
+  display: flex;
+  gap: 50px;
 }
 
-.result {
+.move-button {
+  align-self: center;
+}
+
+.diff-container {
   font-size: 20px;
   align-self: center;
 }

@@ -28,6 +28,7 @@ export enum StatName {
   DamageWhileHealthy = 'DamageWhileHealthy',
   DamageWithPhysical = 'DamageWithPhysical',
   DamageWithBone = 'DamageWithBone',
+  DamageWithCore = 'DamageWithCore',
   DamageFromBloodOrb = 'DamageFromBloodOrb',
 }
 
@@ -74,6 +75,7 @@ export const BucketsDict: BucketDictType = {
     stats: [
       StatName.DamageWithPhysical,
       StatName.DamageWithBone,
+      StatName.DamageWithCore,
     ],
   },
   [BucketName.From]: {

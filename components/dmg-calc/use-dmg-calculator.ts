@@ -3,19 +3,22 @@ import { jsonParse, objectKeys } from '~~/helpers'
 
 import { name } from '~/package.json'
 
+export type StatsType = Partial<Record<StatName, string>>
+
 const LS_STATS = `${name}::stats`
 
+const getInitStats = (lsKey: string) => {
+  const lsStatsString = window.localStorage.getItem(lsKey)
 
-const initStats = () => {
-  const lsStatsString = window.localStorage.getItem(LS_STATS)
   if (lsStatsString !== null) {
-    const statsFromLs = jsonParse<Partial<Record<StatName, string>>>(lsStatsString)
+    const stats = jsonParse<StatsType>(lsStatsString)
 
-    if (statsFromLs !== null) {
-      return statsFromLs
+    if (stats) {
+      return stats
     }
   }
-  return objectKeys(StatName).reduce<Partial<Record<StatName, string>>>((acc, statName) => {
+  
+  return objectKeys(StatName).reduce<StatsType>((acc, statName) => {
     return {
       ...acc,
       [statName]: '0',
@@ -23,10 +26,16 @@ const initStats = () => {
   }, {})
 }
 
-export const useDmgCalculator = () => {
-  const stats = ref(initStats())
-  const setStats = (value: Partial<Record<StatName, string>>) => {
+
+
+export const useDmgCalculator = (lsKey: string) => {
+  const initStats = getInitStats(lsKey)
+  const stats = ref(initStats)
+  const setStats = (value: StatsType) => {
     stats.value = value
+
+    calculate()
+    window.localStorage.setItem(lsKey, JSON.stringify(stats.value))
   }
   
   const setStatsByKey = (
@@ -41,9 +50,6 @@ export const useDmgCalculator = () => {
       ...stats.value,
       [statName]: value
     })
-
-    calculate()
-    window.localStorage.setItem(LS_STATS, JSON.stringify(stats.value))
   }
 
   const result = ref('0')
