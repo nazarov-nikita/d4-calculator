@@ -40,7 +40,7 @@ defineExpose({
         :set-stats-by-key="setStatsByKey"
       />
     </div>
-    <div class="result">=&nbsp;{{ result }}</div>
+    <div class="result">=&nbsp;{{ result.toLocaleString('ru', {minimumFractionDigits: 2}) }}</div>
   </div>
 </template>
 

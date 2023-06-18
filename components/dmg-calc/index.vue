@@ -14,26 +14,32 @@ const calculators = [
 ]
 
 const diff = computed(() => {
-  const value1 = +calculators[0].result.value
-  const value2 = +calculators[1].result.value
-  const result = ((value2 - value1) / (value1 / 100)).toFixed(2)
-  if (result.startsWith('-')) {
-    return result
+  const value1 = calculators[0].result.value
+  const value2 = calculators[1].result.value
+
+  if (!value1 || (!value1 && !value2)) {
+    return 0
   }
 
-  if (result === '0.00') {
-    return result
+  return ((value2 - value1) / (value1 / 100))
+})
+
+const stringDiff = computed(() => {
+  const fixedDiff = diff.value.toFixed(2)
+  
+  if (diff.value > 0) {
+    return `+${fixedDiff}`
   }
 
-  return `+${result}`
+  return fixedDiff
 })
 
 const diffColor = computed(() => {
-  if (diff.value.startsWith('+')) {
+  if (diff.value > 0) {
     return 'green'
   }
 
-  if (diff.value.startsWith('-')) {
+  if (diff.value < 0) {
     return 'red'
   }
 
@@ -46,7 +52,7 @@ const whenClickMoveStatsButton = () => {
 
 defineExpose({
   calculators,
-  diff,
+  stringDiff,
   diffColor,
 })
 
@@ -70,7 +76,7 @@ defineExpose({
     <StatPanel
       :calculator="calculators[1]"
     />
-    <div class="diff-container">Diff: <span :style="`color: ${diffColor};`">{{ diff }}</span> % </div>
+    <div class="diff-container">Diff: <span :style="`color: ${diffColor};`">{{ stringDiff }}</span> % </div>
   </div>
 </template>
 

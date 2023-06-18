@@ -52,7 +52,7 @@ export const useDmgCalculator = (lsKey: string) => {
     })
   }
 
-  const result = ref('0')
+  const result = ref(0)
 
   const calculate = () => {
     const weaponDamage = +(stats.value[StatName.WeaponDamage] || 0)
@@ -93,7 +93,7 @@ export const useDmgCalculator = (lsKey: string) => {
       * (fromDmg / 100)
       * (vsDmg / 100)
       * (allDamage / 100)
-    ).toFixed(2)
+    )
   }
 
   calculate()
