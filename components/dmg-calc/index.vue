@@ -2,8 +2,7 @@
 import StatPanel from './stat-panel.vue'
 
 import { name } from '~/package.json'
-import { jsonParse } from '~/helpers';
-import {StatsType, useDmgCalculator} from './use-dmg-calculator'
+import {useDmgCalculator} from './use-dmg-calculator'
 
 const LS_KEY_STATS = `${name}::stats`
 const LS_KEY_STATS_COMPARE = `${name}::stats-compare`

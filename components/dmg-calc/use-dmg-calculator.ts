@@ -1,11 +1,7 @@
 import { BucketName, BucketsDict, StatName } from '~/helpers/bucket'
 import { jsonParse, objectKeys } from '~~/helpers'
 
-import { name } from '~/package.json'
-
 export type StatsType = Partial<Record<StatName, string>>
-
-const LS_STATS = `${name}::stats`
 
 const getInitStats = (lsKey: string) => {
   const lsStatsString = window.localStorage.getItem(lsKey)
@@ -25,8 +21,6 @@ const getInitStats = (lsKey: string) => {
     }
   }, {})
 }
-
-
 
 export const useDmgCalculator = (lsKey: string) => {
   const initStats = getInitStats(lsKey)
@@ -57,6 +51,7 @@ export const useDmgCalculator = (lsKey: string) => {
   const calculate = () => {
     const weaponDamage = +(stats.value[StatName.WeaponDamage] || 0)
     const mainStat = +(stats.value[StatName.MainStat] || 0) / 10 + 100
+    console.log(mainStat)
     const crit = BucketsDict[BucketName.Crit].stats.reduce((acc, stat) => {
       return (
         stat !== StatName.CriticalStrikeChance
@@ -66,21 +61,13 @@ export const useDmgCalculator = (lsKey: string) => {
     }, 0) / 100 * +(stats.value[StatName.CriticalStrikeChance] || 0) + 100
     const overpower = +(stats.value[StatName.OverpowerDamage] || 0) / 100 * +(stats.value[StatName.OverpowerChance] || 0) + 100
     const vulnerabillity = +(stats.value[StatName.VulnerabillityDamage] || 0) + 100
-    const whileDmg = BucketsDict[BucketName.While].stats.reduce((acc, stat) => (
-      acc + +(stats.value[stat] || 0)
-    ), 0) + 100
-    const withDmg = BucketsDict[BucketName.With].stats.reduce((acc, stat) => (
-      acc + +(stats.value[stat] || 0)
-    ), 0) + 100
-    const fromDmg = BucketsDict[BucketName.From].stats.reduce((acc, stat) => (
-      acc + +(stats.value[stat] || 0)
-    ), 0) + 100
-    const vsDmg = BucketsDict[BucketName.Vs].stats.reduce((acc, stat) => (
-      acc + +(stats.value[stat] || 0)
-    ), 0) + 100
     const allDamage = BucketsDict[BucketName.AllDamage].stats.reduce((acc, stat) => (
       acc + +(stats.value[stat] || 0)
     ), 0) + 100
+    const otherBonuses = BucketsDict[BucketName.OtherBonuses].stats.reduce((acc, stat) => (
+      acc + +(stats.value[stat] || 0)
+    ), 0) + 100
+
 
     result.value = (
       weaponDamage
@@ -88,11 +75,8 @@ export const useDmgCalculator = (lsKey: string) => {
       * (crit / 100)
       * (overpower / 100)
       * (vulnerabillity / 100)
-      * (whileDmg / 100)
-      * (withDmg / 100)
-      * (fromDmg / 100)
-      * (vsDmg / 100)
       * (allDamage / 100)
+      * (otherBonuses / 100)
     )
   }
 

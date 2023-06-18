@@ -4,11 +4,8 @@ export enum BucketName {
   Overpower = 'Overpower',
   Vulnerabillity = 'Vulnerabillity',
   Crit = 'Crit',
-  While = 'While',
-  With = 'With',
-  From = 'From',
-  Vs = 'Vs',
   AllDamage = 'AllDamage',
+  OtherBonuses = 'OtherBonuses',
 }
 
 export enum StatName {
@@ -66,33 +63,21 @@ export const BucketsDict: BucketDictType = {
       StatName.VulnerabillityDamage,
     ],
   },
-  [BucketName.While]: {
-    stats: [
-      StatName.DamageWhileHealthy,
-    ],
-  },
-  [BucketName.With]: {
-    stats: [
-      StatName.DamageWithPhysical,
-      StatName.DamageWithBone,
-      StatName.DamageWithCore,
-    ],
-  },
-  [BucketName.From]: {
-    stats: [
-      StatName.DamageFromBloodOrb,
-    ],
-  },
-  [BucketName.Vs]: {
-    stats: [
-      StatName.DamageVsElites,
-      StatName.DamageVsHealthy,
-      StatName.DamageVsSlowed,
-    ],
-  },
   [BucketName.AllDamage]: {
     stats: [
       StatName.AllDamage,
     ],
+  },
+  [BucketName.OtherBonuses]: {
+    stats: [
+      StatName.DamageWhileHealthy,
+      StatName.DamageWithPhysical,
+      StatName.DamageWithBone,
+      StatName.DamageWithCore,
+      StatName.DamageFromBloodOrb,
+      StatName.DamageVsElites,
+      StatName.DamageVsHealthy,
+      StatName.DamageVsSlowed,
+    ]
   },
 }
