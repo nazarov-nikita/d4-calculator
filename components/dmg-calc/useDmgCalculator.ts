@@ -1,17 +1,31 @@
 import { BucketName, BucketsDict, StatName } from '~/helpers/bucket'
-import { objectKeys } from '~~/helpers'
+import { jsonParse, objectKeys } from '~~/helpers'
+
+import { name } from '~/package.json'
+
+const LS_STATS = `${name}::stats`
 
 
-const initStats = () => objectKeys(StatName).reduce<Partial<Record<StatName, string>>>((acc, statName) => {
-  return {
-    ...acc,
-    [statName]: '0',
+const initStats = () => {
+  const lsStatsString = window.localStorage.getItem(LS_STATS)
+  if (lsStatsString !== null) {
+    const statsFromLs = jsonParse<Partial<Record<StatName, string>>>(lsStatsString)
+
+    if (statsFromLs !== null) {
+      return statsFromLs
+    }
   }
-}, {})
+  return objectKeys(StatName).reduce<Partial<Record<StatName, string>>>((acc, statName) => {
+    return {
+      ...acc,
+      [statName]: '0',
+    }
+  }, {})
+}
 
 export const useDmgCalculator = () => {
   const stats = ref(initStats())
-  const setStats = (value: Partial<Record<StatName, string>> = initStats()) => {
+  const setStats = (value: Partial<Record<StatName, string>>) => {
     stats.value = value
   }
   
@@ -29,6 +43,7 @@ export const useDmgCalculator = () => {
     })
 
     calculate()
+    window.localStorage.setItem(LS_STATS, JSON.stringify(stats.value))
   }
 
   const result = ref('0')
@@ -74,6 +89,8 @@ export const useDmgCalculator = () => {
       * (allDamage / 100)
     ).toFixed(2)
   }
+
+  calculate()
 
   return {
     stats,
