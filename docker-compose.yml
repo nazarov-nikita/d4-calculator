@@ -1,0 +1,22 @@
+---
+version: "3.3"
+services:
+  d4-calculator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: d4-calculator
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Rome
+    image: "blastbeng/d4-calculator:1.0.0"
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    entrypoint: npm run start
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000"]
+#      interval: 30s
+#      timeout: 5s
+#      retries: 12
